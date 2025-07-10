@@ -1,0 +1,494 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    color: white;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameContainer {
+    position: relative;
+    width: 1200px;
+    height: 800px;
+    border: 3px solid #4a90e2;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(74, 144, 226, 0.5);
+    overflow: hidden;
+}
+
+#gameCanvas {
+    display: block;
+    background: #0a0a0a;
+    cursor: crosshair;
+}
+
+#ui {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    display: flex;
+    gap: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    flex-wrap: wrap;
+    max-width: 600px;
+}
+
+#ui > div {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 2px solid #4a90e2;
+    min-width: 120px;
+    text-align: center;
+}
+
+#score { color: #ffd700; }
+#health { color: #ff6b6b; }
+#ammo { color: #4ecdc4; }
+#level { color: #a8e6cf; }
+#playerLevel { color: #ff9ff3; }
+#experience { color: #54a0ff; }
+#coins { color: #ffd700; }
+#combo { 
+    color: #ff6b6b; 
+    animation: pulse 1s infinite;
+    background: rgba(255, 107, 107, 0.2) !important;
+    border-color: #ff6b6b !important;
+}
+#weaponDisplay { 
+    color: #4ecdc4; 
+    min-width: 200px;
+}
+#revive { 
+    color: #00FF00; 
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#revive:hover {
+    background: rgba(0, 255, 0, 0.1);
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+
+#revive span {
+    user-select: none;
+}
+#bossAttempts { 
+    color: #FF4500; 
+    font-weight: bold;
+    background: rgba(255, 69, 0, 0.2) !important;
+    border-color: #FF4500 !important;
+    animation: pulse 1.5s infinite;
+}
+
+#gameOver, #startScreen, #shopScreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    border: 3px solid #4a90e2;
+    box-shadow: 0 0 50px rgba(74, 144, 226, 0.8);
+    z-index: 20;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+#startScreen h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+}
+
+#startScreen p {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #ccc;
+}
+
+.controls, .weapons, .roguelike {
+    text-align: left;
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(74, 144, 226, 0.1);
+    border-radius: 8px;
+    border: 1px solid #4a90e2;
+}
+
+.controls h3, .weapons h3, .roguelike h3 {
+    color: #4a90e2;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.controls p, .weapons p, .roguelike p {
+    font-size: 14px;
+    margin: 5px 0;
+    color: #ddd;
+}
+
+/* 商店样式 */
+#shopItems {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.shop-item {
+    background: rgba(74, 144, 226, 0.1);
+    border: 2px solid #4a90e2;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+.shop-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(74, 144, 226, 0.3);
+}
+
+.item-header.common {
+    border-left: 4px solid #4a90e2;
+}
+
+.item-header.uncommon {
+    border-left: 4px solid #ffd700;
+}
+
+.item-header.rare {
+    border-left: 4px solid #ff4500;
+}
+
+.item-type {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(74, 144, 226, 0.2);
+    color: #4a90e2;
+}
+
+.shop-item h3 {
+    color: #ffd700;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.shop-item p {
+    color: #ccc;
+    font-size: 12px;
+    margin: 5px 0;
+}
+
+.shop-item .cost {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.shop-item button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.shop-item button.buyable {
+    background: linear-gradient(45deg, #4a90e2, #357abd);
+    color: white;
+}
+
+.shop-item button.buyable:hover {
+    background: linear-gradient(45deg, #357abd, #4a90e2);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+}
+
+.shop-item button.unaffordable {
+    background: #666;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.shop-item button.unaffordable:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.shop-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.shop-buttons button {
+    margin-top: 0;
+}
+
+.shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4a90e2;
+}
+
+.shop-info {
+    text-align: right;
+}
+
+.shop-info p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.timer {
+    font-weight: bold;
+    font-size: 16px !important;
+}
+
+#shopTimer {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 18px;
+    color: #4a90e2;
+    transition: color 0.3s ease;
+}
+
+.timer-progress {
+    width: 100px;
+    height: 6px;
+    background: rgba(74, 144, 226, 0.3);
+    border-radius: 3px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.timer-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4a90e2, #357abd);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 100%;
+}
+
+button {
+    background: linear-gradient(45deg, #4a90e2, #357abd);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 20px;
+}
+
+button:hover {
+    background: linear-gradient(45deg, #357abd, #4a90e2);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 游戏内特效 */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+}
+
+@keyframes timeWarning {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.pulse {
+    animation: pulse 0.5s ease-in-out;
+}
+
+/* 武器切换动画 */
+@keyframes weaponSwitch {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.weapon-switch {
+    animation: weaponSwitch 0.3s ease-in-out;
+}
+
+/* 升级特效 */
+@keyframes levelUp {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.level-up {
+    animation: levelUp 0.5s ease-in-out;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    #gameContainer {
+        width: 100vw;
+        height: 100vh;
+        border: none;
+        border-radius: 0;
+    }
+    
+    #gameCanvas {
+        width: 100%;
+        height: 100%;
+    }
+    
+    #ui {
+        font-size: 14px;
+        gap: 15px;
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    #ui > div {
+        min-width: 100px;
+        padding: 6px 10px;
+    }
+    
+    #startScreen {
+        max-width: 90vw;
+        padding: 20px;
+    }
+    
+    #startScreen h1 {
+        font-size: 36px;
+    }
+    
+    .controls, .weapons {
+        font-size: 12px;
+    }
+}
+
+/* 滚动条样式 */
+#startScreen::-webkit-scrollbar {
+    width: 8px;
+}
+
+#startScreen::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+#startScreen::-webkit-scrollbar-thumb {
+    background: #4a90e2;
+    border-radius: 4px;
+}
+
+#startScreen::-webkit-scrollbar-thumb:hover {
+    background: #357abd;
+} 
+
+#bossRetryDialog button:hover {
+    opacity: 0.85;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transform: translateY(-2px) scale(1.04);
+    transition: all 0.15s;
+}
+#bossRetryDialog button:active {
+    opacity: 0.7;
+    transform: scale(0.98);
+} 
+
+#lifeStealValue {
+    color: #ff4e50;
+    font-weight: bold;
+    margin-left: 8px;
+} 
+
+#levelStartDialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.92);
+    padding: 60px 80px;
+    border-radius: 18px;
+    text-align: center;
+    border: 4px solid #ffd700;
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.7);
+    z-index: 30;
+    font-size: 48px;
+    color: #ffd700;
+    letter-spacing: 2px;
+    animation: fadeInOut 1.5s;
+    max-width: 80vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#levelStartDialog.hidden {
+    display: none;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, -60%) scale(0.95); }
+    10% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+    80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -40%) scale(0.95); }
+} 
