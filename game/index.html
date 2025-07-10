@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地牢射击 - Dungeon Shooter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="ui">
+            <div id="score">分数: <span id="scoreValue">0</span></div>
+            <div id="health">生命值: <span id="healthValue">100</span></div>
+            <div id="ammo">弹药: <span id="ammoValue">30</span></div>
+            <div id="level">关卡: <span id="levelValue">1</span></div>
+            <div id="playerLevel">等级: <span id="playerLevelValue">1</span></div>
+            <div id="experience">经验: <span id="playerExp">0/100</span></div>
+            <div id="coins">金币: <span id="coinsValue">0</span></div>
+            <div id="combo" style="display: none;">连击: <span id="comboValue">0</span></div>
+            <div id="weaponDisplay">武器: <span id="weaponDisplayValue">沙漠之鹰</span></div>
+            <div id="revive">复活币: <span id="reviveValue">0/3</span></div>
+            <div id="bossAttempts" style="display: none;">BOSS挑战: <span id="bossAttemptsValue">3/3</span></div>
+        </div>
+        
+        <canvas id="gameCanvas" width="1200" height="800"></canvas>
+        
+        <div id="gameOver" class="hidden">
+            <h2>游戏结束</h2>
+            <p>最终分数: <span id="finalScore">0</span></p>
+            <p>最终等级: <span id="finalLevel">1</span></p>
+            <button id="restartBtn">重新开始</button>
+        </div>
+        
+        <div id="startScreen">
+            <h1>地牢射击</h1>
+            <p>使用WASD移动，鼠标瞄准射击</p>
+            <p>消灭所有敌人，生存下去！</p>
+            <div class="controls">
+                <h3>控制说明：</h3>
+                <p>WASD/方向键：移动</p>
+                <p>鼠标：瞄准</p>
+                <p>左键：射击</p>
+                <p>R：换弹</p>
+                <p>1-8：切换武器</p>
+                <p>Q/E：切换武器</p>
+                <p>全自动武器：按住左键持续射击</p>
+                <p>半自动武器：点击左键射击</p>
+            </div>
+            <div class="weapons">
+                <h3>武器栏</h3>
+                <ul style="text-align:left; font-size:15px; margin:10px 0 0 0; padding-left:20px;">
+                    <li><b>沙漠之鹰</b>：高伤害，精准，半自动，弹夹7发，适合点射。</li>
+                    <li><b>AK-47</b>：高伤害，高后坐力，全自动，弹夹30发，适合扫射。</li>
+                    <li><b>M4A1</b>：中等伤害，低后坐力，全自动，弹夹30发，射速快，适合持续输出。</li>
+                    <li><b>火箭弹</b>：超高伤害，范围溅射，半自动，弹夹5发，适合群体爆炸。</li>
+                    <li><b>霰弹枪</b>：多发子弹，扇形扩散，半自动，弹夹8发，近距离爆发。</li>
+                </ul>
+                <p style="margin-top:10px;">吸血：<span id="lifeStealValue">0%</span></p>
+            </div>
+            <div class="roguelike">
+                <h3>Roguelike特性：</h3>
+                <p>• 击杀敌人获得金币和经验</p>
+                <p>• 每关结束后进入商店购买道具</p>
+                <p>• 属性永久提升，打造最强角色</p>
+                <p>• 特殊道具带来独特能力</p>
+            </div>
+            <button id="startBtn">开始游戏</button>
+        </div>
+        
+        <div id="shopScreen" class="hidden">
+            <div class="shop-header">
+                <h2>商店 - 关卡 <span id="currentLevel">1</span></h2>
+                <div class="shop-info">
+                    <p>当前金币: <span id="playerCoins">0</span></p>
+                    <p class="timer">剩余时间: <span id="shopTimer">0:30</span></p>
+                    <div class="timer-progress">
+                        <div id="timerBar" class="timer-bar"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="shopItems"></div>
+            <div class="shop-buttons">
+                <button id="refreshShopBtn">刷新商店 (25金币)</button>
+                <button id="extendTimeBtn">延长时间 (15金币)</button>
+                <button id="closeShopBtn">继续游戏</button>
+            </div>
+        </div>
+        <div id="levelStartDialog" class="hidden">
+            <h2 id="levelStartTitle">第1关开始</h2>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html> 
